@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import '../css/Home.css'
 import MovieCard from "../Components/Moviecard"
-import { getPopularMovies } from "../services/api";
+import { searchMovies,getPopularMovies } from "../services/api";
 
 
 function Home() {
@@ -27,9 +27,26 @@ function Home() {
         loadPopularMovies();
     }, []);
 
-    const handleSearch = (e) => {
+    const handleSearch = async (e) => {
 
         setSearchQuery("")
+
+        e.preventDefault();
+        if (!searchQuery.trim()) return;
+        if (loading) return;
+
+        setLoading(true);
+        try {
+            const searchResults =  await searchMovies(searchQuery);
+            setMovies(searchResults);
+            setError(null);
+        } catch (err) {
+            console.log(err);
+            setError("Failed to search movies...");
+        } finally {
+            setLoading(false);
+        }
+
         e.preventDefault()
     }
 
