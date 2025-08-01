@@ -6,26 +6,26 @@ import { getPopularMovies } from "../services/api";
 
 function Home() {
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [movies, setMovies] = useState([]);
-  const [, setError] = useState(null);
-  const [, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [movies, setMovies] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadPopularMovies = async () => {
-      try {
-        const popularMovies = await getPopularMovies();
-        setMovies(popularMovies);
-      } catch (err) {
-        console.log(err);
-        setError("Failed to load movies...");
-      } finally {
-        setLoading(false);
-      }
-    };
+    useEffect(() => {
+        const loadPopularMovies = async () => {
+            try {
+                const popularMovies = await getPopularMovies();
+                setMovies(popularMovies);
+            } catch (err) {
+                console.log(err);
+                setError("Failed to load movies...");
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    loadPopularMovies();
-  }, []);
+        loadPopularMovies();
+    }, []);
 
     const handleSearch = (e) => {
 
@@ -46,13 +46,16 @@ function Home() {
                 <button type="submit" className="search-button">Search</button>
             </form>
 
-            <div className="movies-grid">
-                {movies.map((movie) =>
-                    movie.title.toLowerCase().startsWith(searchQuery) &&
-                    (
-                        <MovieCard movie={movie} key={movie.id} />
-                    ))}
-            </div>
+            {error && <div className="error-message">{error}</div>}
+
+            {loading ? (<div className="loading">loading...</div>) : (
+                <div className="movies-grid">
+                    {movies.map((movie) =>
+                        movie.title.toLowerCase().startsWith(searchQuery) &&
+                        (
+                            <MovieCard movie={movie} key={movie.id} />
+                        ))}
+                </div>)}
         </div>
     );
 }
